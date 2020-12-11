@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GameContext } from '../GameContext';
 import { Cell } from './Cell';
 import { Game } from './Game';
+import './Grid.css'
 
 export const Grid: React.FunctionComponent = () => {
+
     const { grid, updateGridCellStatus } = React.useContext(GameContext);
+
+    useEffect(() => {
+        let root = document.documentElement;
+        root.style.setProperty('--gridColumn', `${grid.column}`);
+        root.style.setProperty('--gridRow', `${grid.row}`);
+    }, []);
+
 
     const handleClick = (index: number, button: number) => {
         updateGridCellStatus(index, button === 0 ? 'dig' : 'flag');
@@ -16,17 +25,9 @@ export const Grid: React.FunctionComponent = () => {
         false;
 
     return (
-        <React.Fragment>
+        <main className="game">
             <Game gameOver={gameOver} />
-            <div
-                style={{
-                    display: 'flex',
-                    border: '1px solid black',
-                    boxSizing: 'content-box',
-                    flexWrap: 'wrap',
-                    width: `calc(40px * ${grid.column})`,
-                }}
-            >
+            <div className="grid" >
                 {grid.map((cell, index) => (
                     <Cell
                         key={index}
@@ -37,6 +38,6 @@ export const Grid: React.FunctionComponent = () => {
                     />
                 ))}
             </div>
-        </React.Fragment>
+        </main>
     );
 };

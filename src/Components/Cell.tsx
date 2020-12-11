@@ -1,5 +1,6 @@
 import React from 'react';
 import { CellStatus } from '../Domain/Cell';
+import "./Cell.css"
 
 type CellProps = {
     status: CellStatus;
@@ -13,21 +14,10 @@ const emojis = {
     detonated: '💥',
 };
 
-const cellStyle = (status: CellStatus): React.CSSProperties => ({
-    width: '40px',
-    height: '40px',
-    textAlign: 'center',
-    lineHeight: '40px',
-    border: '1px solid black',
-    boxSizing: 'border-box',
-    cursor: 'pointer',
-    backgroundColor:
-        status === 'untouched' || status === 'flagged' ? '#ccc' : undefined,
-});
 
 export const Cell: React.FunctionComponent<CellProps> = props => {
     return (
-        <div
+        <div className={`cell cell--${props.status}`}
             onClick={ev => {
                 ev.preventDefault();
                 props.onclick(ev);
@@ -36,9 +26,11 @@ export const Cell: React.FunctionComponent<CellProps> = props => {
                 ev.preventDefault();
                 props.onclick(ev);
             }}
-            style={cellStyle(props.status)}
         >
-            {emojis[props.status]}
+            <span className={`cell__txt ${props.status !== "untouched" && "cell__txt--active"}`}>
+                {emojis[props.status]}
+            </span>
+
         </div>
     );
 };
