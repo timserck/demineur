@@ -20,11 +20,9 @@ export class Grid {
         while (++index < length) {
             const rand = index + Math.floor(Math.random() * (length - index));
             const cell = cells[rand];
-
             cells[rand] = cells[index];
             cells[index] = cell;
         }
-
         return new Grid(column, cells, row);
     }
 
@@ -42,7 +40,6 @@ export class Grid {
                 'cell count must be dividable by column count'
             );
         }
-
         this._column = column;
         this._row = row;
         this._cells = cells;
@@ -67,7 +64,6 @@ export class Grid {
         return this._cells[this._column * y + x];
     }
 
-
     nbrBombNear(x: number, y: number, cellIndex: number, cells: Cells) {
         let nbrBombNear = 0
 
@@ -82,19 +78,61 @@ export class Grid {
 
     }
 
+    convertCoordinatesToIndex(x: number, y: number): number {
+        return this._column * y + x
+    }
+
     sendActionToCell(cellIndex: number, action: CellAction): Grid {
         const cells = [...this._cells];
         const cell = cells[cellIndex];
-        console.log(cells, 'cells')
         cells[cellIndex] = cell[action]();
         const x = (cellIndex % this._column);
         const y = Math.floor(cellIndex / this._column);
         this.nbrBombNear((x), y, cellIndex, cells)
+        this.expandDig(x, y, cellIndex, cells, cell)
         return new Grid(this._column, cells, this._row);
     }
 
+    expandDig(x: number, y: number, cellIndex: number, cells: Cells, cell: Cell) {
 
+        if (!cells[cellIndex].bomb) {
+            for (var i = 0; i < (this._row - x) - 1; i++) {
+                let currentCell = cells[(this.convertCoordinatesToIndex(x + i, y)) + 1]
+                if (currentCell) {
+                    if (currentCell?.bomb === true) {
+                        break;
+                    }
+                    cells[(this.convertCoordinatesToIndex(x + i, y)) + 1] = cell['dig']();
+                    this.nbrBombNear((x + i) + 1, y, (this.convertCoordinatesToIndex(x + i, y) + 1), cells)
+                }
+            }
+            for (var i = x; i > 0; i--) {
+                let currentCell = cells[(this.convertCoordinatesToIndex(i - 1, y))]
+                if (currentCell?.bomb === true) {
+                    break;
+                }
+                cells[(this.convertCoordinatesToIndex(i - 1, y))] = cell['dig']();
+                this.nbrBombNear(i - 1, y, (this.convertCoordinatesToIndex(i - 1, y)), cells)
+            }
+            for (var i = 0; i < (this._column - y); i++) {
+                let currentCell = cells[(this.convertCoordinatesToIndex(x, y + i))]
 
+                if (currentCell?.bomb === true) {
+                    break;
+                }
+                cells[(this.convertCoordinatesToIndex(x, y + i))] = cell['dig']();
+                this.nbrBombNear(x, (y + i), (this.convertCoordinatesToIndex(x, y + i)), cells)
+            }
+            for (var i = y; i > 0; i--) {
+                let currentCell = cells[(this.convertCoordinatesToIndex(x, i - 1))]
+                if (currentCell?.bomb === true) {
+                    break;
+                }
+                cells[(this.convertCoordinatesToIndex(x, i - 1))] = cell['dig']();
+                this.nbrBombNear(x, (i - 1), (this.convertCoordinatesToIndex(x, i - 1)), cells)
+            }
+        }
+    }
 
     isDefeated = () => {
         for (let cell of this) {
@@ -111,11 +149,9 @@ export class Grid {
                 (cell.status === "untouched")
             ) {
                 return false;
-
             }
         }
         return true;
-
     };
 
     get column() {
