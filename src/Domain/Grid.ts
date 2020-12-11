@@ -5,6 +5,7 @@ export type Cells = Array<Cell>;
 export class Grid {
     [key: number]: number;
     private _column: number;
+    private _row: number;
     private _cells: Cells;
 
     static generate(row: number, column: number, minesCount: number): Grid {
@@ -24,12 +25,16 @@ export class Grid {
             cells[index] = cell;
         }
 
-        return new Grid(column, cells);
+        return new Grid(column, cells, row);
     }
 
-    constructor(column: number, cells: Cells) {
+    constructor(column: number, cells: Cells, row: number) {
         if (!Number.isInteger(column)) {
             throw new TypeError('column count must be an integer');
+        }
+
+        if (!Number.isInteger(row)) {
+            throw new TypeError('row count must be an integer');
         }
 
         if (cells.length % column !== 0 || cells.length === 0) {
@@ -39,6 +44,7 @@ export class Grid {
         }
 
         this._column = column;
+        this._row = row;
         this._cells = cells;
     }
 
@@ -64,9 +70,9 @@ export class Grid {
     sendActionToCell(cellIndex: number, action: CellAction): Grid {
         const cells = [...this._cells];
         const cell = cells[cellIndex];
-
+        console.log(cells, 'cells')
         cells[cellIndex] = cell[action]();
-        return new Grid(this._column, cells);
+        return new Grid(this._column, cells, this._row);
     }
 
     isDefeated = () => {
@@ -79,16 +85,22 @@ export class Grid {
     isVictorious = () => {
         for (let cell of this) {
             if (
-                (cell.dug === false && cell.flagged === false) ||
-                cell.detonated === true
+                (cell.flagged === true && cell.bomb === false) ||
+                (cell.detonated === true) ||
+                (cell.status === "untouched")
             ) {
                 return false;
+
             }
         }
         return true;
+
     };
 
     get column() {
         return this._column;
+    }
+    get row() {
+        return this._row;
     }
 }
