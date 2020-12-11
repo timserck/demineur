@@ -67,13 +67,34 @@ export class Grid {
         return this._cells[this._column * y + x];
     }
 
+
+    nbrBombNear(x: number, y: number, cellIndex: number, cells: Cells) {
+        let nbrBombNear = 0
+
+        this.cellByCoodinates(x + 1, y)?.bomb === true && x < this.row - 1 && x + 1 >= 0 ? nbrBombNear++ : null
+        this.cellByCoodinates(x - 1, y)?.bomb === true && x < this.row - 1 && x - 1 >= 0 ? nbrBombNear++ : null
+        this.cellByCoodinates(x, y + 1)?.bomb === true && y < this.column && y + 1 >= 0 ? nbrBombNear++ : null
+        this.cellByCoodinates(x, y - 1)?.bomb === true && y < this.column && y - 1 >= 0 ? nbrBombNear++ : null
+
+        if (!cells[cellIndex].bomb) {
+            cells[cellIndex].nextBomb = nbrBombNear;
+        }
+
+    }
+
     sendActionToCell(cellIndex: number, action: CellAction): Grid {
         const cells = [...this._cells];
         const cell = cells[cellIndex];
         console.log(cells, 'cells')
         cells[cellIndex] = cell[action]();
+        const x = (cellIndex % this._column);
+        const y = Math.floor(cellIndex / this._column);
+        this.nbrBombNear((x), y, cellIndex, cells)
         return new Grid(this._column, cells, this._row);
     }
+
+
+
 
     isDefeated = () => {
         for (let cell of this) {

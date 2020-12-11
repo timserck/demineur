@@ -5,6 +5,7 @@ import "./Cell.css"
 type CellProps = {
     status: CellStatus;
     onclick: Function;
+    nextBomb: number;
 };
 
 const emojis = {
@@ -29,6 +30,7 @@ export const Cell: React.FunctionComponent<CellProps> = props => {
         >
             <span className={`cell__txt ${props.status !== "untouched" && "cell__txt--active"}`}>
                 {emojis[props.status]}
+                {props.nextBomb == 0 ? '' : props.nextBomb}
             </span>
 
         </div>

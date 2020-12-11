@@ -5,34 +5,45 @@ export class Cell {
     private _bomb: boolean;
     private _flagged: boolean;
     private _dug: boolean;
+    private _nextBomb: number;
 
     static withBomb(): Cell {
-        return new Cell(true, false, false);
+        return new Cell(true, false, false, 0);
     }
 
     static withoutBomb(): Cell {
-        return new Cell(false, false, false);
+        return new Cell(false, false, false, 0);
     }
 
-    constructor(withBomb: boolean, flagged: boolean, dug: boolean) {
+    constructor(withBomb: boolean, flagged: boolean, dug: boolean, nextBomb: number) {
         this._bomb = withBomb;
         this._flagged = flagged;
         this._dug = dug;
+        this._nextBomb = nextBomb
     }
 
     flag(): Cell {
         if (this._dug === true) {
             throw new Error('This cell has already been dug');
         }
-        return new Cell(this._bomb, !this._flagged, this._dug);
+        return new Cell(this._bomb, !this._flagged, this._dug, this._nextBomb);
     }
 
     dig(): Cell {
-        return new Cell(this._bomb, false, true);
+        return new Cell(this._bomb, false, true, this._nextBomb);
     }
 
     get bomb(): boolean {
         return this._bomb;
+    }
+
+    get nextBomb(): number {
+        return this._nextBomb;
+    }
+
+
+    set nextBomb(number: number) {
+        this._nextBomb = number;
     }
 
     get detonated(): boolean {
