@@ -21,6 +21,20 @@ describe(Grid, () => {
             expect(grid.cellByCoodinates(0, 0)).toBe(expected);
         });
 
+
+        test('it get the index of the first cell in grid when asking for x:0 y:0', () => {
+            const expected = Cell.withBomb();
+            const unexpected = Cell.withoutBomb();
+            const grid = new Grid(2, [
+                expected,
+                unexpected,
+                unexpected,
+                unexpected,
+            ], 2);
+
+            expect(grid.convertCoordinatesToIndex(0, 0)).toBe(0);
+        });
+
         test('it get the last cell in grid when asking for x:3 y:1', () => {
             const expected = Cell.withBomb();
             const unexpected = Cell.withoutBomb();

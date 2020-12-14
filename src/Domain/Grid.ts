@@ -1,4 +1,5 @@
 import { Cell, CellAction } from './Cell';
+import { exists } from 'fs';
 
 export type Cells = Array<Cell>;
 
@@ -144,9 +145,8 @@ export class Grid {
     isVictorious = () => {
         for (let cell of this) {
             if (
-                (cell.flagged === true && cell.bomb === false) ||
-                (cell.detonated === true) ||
-                (cell.status === "untouched")
+                (cell.bomb === false && cell.dug === false) ||
+                cell.detonated === true
             ) {
                 return false;
             }

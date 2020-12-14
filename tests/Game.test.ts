@@ -12,7 +12,7 @@ describe('Rules', () => {
         const cellWithBomb = Cell.withBomb();
         const grid = new Grid(1, [cellWithBomb], 1);
         expect(grid.isDefeated()).toBe(false);
-        expect(grid.isVictorious()).toBe(false);
+        expect(grid.isVictorious()).toBe(true);
 
         const gridDetonated = grid.sendActionToCell(0, 'dig');
 

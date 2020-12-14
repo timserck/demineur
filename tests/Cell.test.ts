@@ -13,6 +13,11 @@ describe(Cell, () => {
             expect(cell.detonated).toBe(false);
         });
 
+        test('can receive number bomb', () => {
+            cell.nextBomb = 0;
+            expect(cell.nextBomb).toBe(0);
+        });
+
         test('does not explode even when you dig it (there is no bomb)', () => {
             cell.dig();
             expect(cell.detonated).toBe(false);

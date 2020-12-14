@@ -10,7 +10,7 @@ type GameContextProps = {
 type GridCustomHook = [Grid, (index: number, action: CellAction) => void];
 
 const initialContext: GameContextProps = {
-    grid: Grid.generate(4, 4, 1),
+    grid: Grid.generate(1, 1, 0),
     updateGridCellStatus: () => { },
 };
 
